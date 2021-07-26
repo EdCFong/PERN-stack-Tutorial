@@ -7,3 +7,17 @@ CREATE TABLE restaurants (
 
 
 INSERT INTO restaurants (id, name, location, price_range) values (123, 'mcdonals','new york',3) 
+
+
+
+
+Postgres
+
+\l  lista todas las bases de datos
+\c  abre una base de datos
+\d  lista todas las tablas en la base de dtos
+
+
+
+
+UPDATE restaurants SET name = 'rrr', location = 'h', price_range = $3 WHERE id = $2;
