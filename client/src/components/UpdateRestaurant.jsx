@@ -27,7 +27,7 @@ const UpdateRestaurant = (props) => {
         const updatedRestaurant = await RestaurantFinder.put(`/${id}`, { 
             name,
             location,
-            price_range: priceRange,
+            price_range: priceRange
         });
         history.push("/");
     };
