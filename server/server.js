@@ -32,12 +32,15 @@ app.get("/api/v1/restaurants", async (req, res) => {
 //Get a restaurant 
 app.get("/api/v1/restaurants/:id", async (req, res) => {
   try {
-    const results = await db.query("SELECT * FROM restaurants WHERE id = $1", [req.params.id]);
+    const restaurant = await db.query("SELECT * FROM restaurants WHERE id = $1", [req.params.id]);
+    const reviews = await db.query("SELECT * FROM reviews WHERE restaurant_id = $1", [req.params.id]);
+
     res.status(200).json({
       status: "success",
-      results: results.rows.length,
+      restaurant: restaurant.rows.length,
       data: {
-        restaurant: results.rows[0]
+        restaurant: restaurant.rows[0],
+        reviews: reviews.rows
       }
     })
   }
@@ -77,7 +80,6 @@ app.put("/api/v1/restaurants/:id", async (req, res) => {
 
     res.status(200).json({
       status: "success",
-      results: results.rows.length,
       data: {
         restaurant: results.rows[0]
       }
@@ -95,7 +97,7 @@ app.delete("/api/v1/restaurants/:id", async (req, res) => {
   try {
     const results = await db.query("DELETE FROM restaurants WHERE id = $1", [req.params.id]);
 
-    res.status(204).json({ status: "success"});
+    res.status(204).json({ status: "success" });
   }
   catch (err) {
     console.log(err);
@@ -103,7 +105,22 @@ app.delete("/api/v1/restaurants/:id", async (req, res) => {
 });
 
 
+app.post("/api/v1/restaurants/:id/addReview", async (req, res) => {
+  try {
+    const newReview = await db.query("INSERT INTO reviews (restaurant_id, name, review, rating) values ($1, $2, $3, $4) RETURNING *;", [
+      req.paramsid, req.body.name, req.body.review, req.body.rating
+    ])
 
+    res.status(201).json({
+      status: "success",
+      data: { review: newReview.rows[0]}
+
+    })
+  }
+  catch (err) {
+    console.log(err);
+  }
+})
 
 
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useHistory, useParams } from 'react-router-dom';
-import {RestaurantsContext} from "../context/RestaurantsContext";
+import { RestaurantsContext } from "../context/RestaurantsContext";
 import RestaurantFinder from "../apis/RestaurantFinder";
 
 const UpdateRestaurant = (props) => {
@@ -12,24 +12,29 @@ const UpdateRestaurant = (props) => {
     const [priceRange, setPriceRange] = useState("");
 
     useEffect(() => {
-          const fetchData = async () => {
-              const response = await RestaurantFinder.get(`/${id}`);
-              setName(response.data.data.restaurant.name);
-              setLocation(response.data.data.restaurant.location);
-              setPriceRange(response.data.data.restaurant.price_range);
-          };
+        const fetchData = async () => {
+            const response = await RestaurantFinder.get(`/${id}`);
+            setName(response.data.data.restaurant.name);
+            setLocation(response.data.data.restaurant.location);
+            setPriceRange(response.data.data.restaurant.price_range);
+        };
 
-          fetchData();
+        fetchData();
     }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const updatedRestaurant = await RestaurantFinder.put(`/${id}`, { 
-            name,
-            location,
-            price_range: priceRange
-        });
-        history.push("/");
+        try {
+            const updatedRestaurant = await RestaurantFinder.put(`/${id}`, {
+                name,
+                location,
+                price_range: priceRange
+            });
+            history.push("/");
+        }
+        catch (err) {
+            console.log(err);
+        }
     };
 
     return (
